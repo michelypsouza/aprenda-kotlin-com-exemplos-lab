@@ -1,6 +1,12 @@
 enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
 
-class Usuario(val nome: String, val matricula: Int)
+class Usuario(val nome: String, val matricula: Int) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Usuario) return false
+        return this.matricula == other.matricula
+    }
+}
 
 data class ConteudoEducacional(var nome: String, val duracao: Int = 60, val nivel: Nivel = Nivel.BASICO)
 
@@ -9,8 +15,13 @@ data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) 
     val inscritos = mutableListOf<Usuario>()
     
     fun matricular(usuario: Usuario) {
-        inscritos.add(usuario)
-        println("Usuário com matricula ${usuario.matricula} e nome ${usuario.nome} foi matriculado na formação $nome.")
+        
+        if (inscritos.contains(usuario)) {
+           println("Usuario com matricula: ${usuario.matricula} e nome: ${usuario.nome} ja foi matriculado anteriormente na formação $nome.")
+        } else {
+           inscritos.add(usuario)
+           println("Usuário com matricula: ${usuario.matricula} e nome: ${usuario.nome} foi matriculado na formação $nome.")
+        }
     }
 }
 
@@ -26,6 +37,8 @@ fun main() {
     val formacaoKotlin = Formacao("Formação Backend com Kotlin", listOf(conteudo1, conteudo2, conteudo3))
     formacaoKotlin.matricular(usuario1)
     formacaoKotlin.matricular(usuario2)
+    println()
+    formacaoKotlin.matricular(usuario1)
 
     println("A formação ${formacaoKotlin.nome} possui os seguintes usuários matriculados : ${formacaoKotlin.inscritos.map { it.nome }}\n")       
 
